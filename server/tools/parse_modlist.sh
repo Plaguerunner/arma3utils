@@ -3,6 +3,11 @@
 Help ()
 {
     echo "Parses a HTML modlist and outputs a delimited (default ',') set of mod IDs."
+    echo "Meant to be fed to a HAVOC server's old workshop mod installer."
+    echo "IMPORTANT!!! Steam API connection has a rate limiter. Maybe 50 connections / 30m."
+    echo "This means you can't just pound the whole list through at once."
+    echo "Be extra careful and do it in batches of 10-20 mods, and watch for failures."
+    echo "The updater tool WILL NOT recover on its own and WILL report success, even on failures."
     echo
     echo "Syntax: parse_modlist.sh [-d delim] <modlist_file>"
     echo "options:"
