@@ -6,6 +6,7 @@ Help ()
     echo
     echo "Syntax: parse_modlist.sh [-d delim] <modlist_file>"
     echo "options:"
+    echo "a       Print the list as it should be passed to the -mod or -servermod argument to Arma3"
     echo "d       Use the specified delimiter."
     echo "h|help  Print this Help."
     echo
@@ -17,11 +18,19 @@ then
     exit -1
 fi
 
+MODE="numeric"
+PREFIX=''
 DELIM=','
 POS_ARG=""
 
 while [[ $# -gt 0 ]]; do
 	case $1 in
+          -a|--arg)
+            DELIM=';'
+            PREFIX='@'
+	    MODE="text"
+	    shift
+	    ;;
 	  -d|--delim)
 	    DELIM=$2
 	    shift
@@ -47,11 +56,18 @@ if [ ! -f "$POS_ARG" ]; then
     exit -1
 fi
 
-
+IFS=$'\n'
 FULL=""
-for LINE in $(cat $POS_ARG | grep -i id | cut -d '=' -f 3 | cut -d '"' -f 1) 
-do
-FULL+="$LINE$DELIM"
-   done
-echo "$FULL"
+if [ "$MODE" = "text" ]; then
+  for LINE in $(cat $POS_ARG | grep DisplayName | cut -d '>' -f 2 | cut -d '<' -f 1) 
+    do
+      FULL+="$PREFIX$LINE$DELIM"
+    done
+else
+  for LINE in $(cat $POS_ARG | grep -i id | cut -d '=' -f 3 | cut -d '"' -f 1)
+    do
+      FULL+="$PREFIX$LINE$DELIM"
+    done
+fi
+    echo "$FULL"
 
